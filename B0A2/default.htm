@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<TITLE>請選擇登入主機</TITLE>
+		<script language="javascript">
+			
+			function init()
+			{
+				
+					Service.useService("http://192.168.12.122/B0A2/GetConnections.asmx?WSDL","Server1");
+					Service.useService("http://192.168.12.102/B0A2/GetConnections.asmx?WSDL","Server2");
+					Service.useService("http://192.168.12.132/B0A2/GetConnections.asmx?WSDL","Server3");
+					
+					var Server1ID=Service.Server1.callService(onServer1result,"CurrentConnections");
+					var Server2ID=Service.Server2.callService(onServer2result,"CurrentConnections");
+					var Server3ID=Service.Server3.callService(onServer3result,"CurrentConnections");
+			}
+			var numbers = [];
+            var AVG=0;
+            var  S1=0;
+            var S2=0;
+
+			function onServer1result(result)
+			{
+				
+				WSResult(result,"Server1");
+				S1=result.value;
+				numbers.push(S1);
+				
+			}
+			
+			function onServer2result(result)
+			{
+				
+				WSResult(result,"Server2");
+				S2=result.value;
+				numbers.push(S2);
+				
+			}
+            var sum = 0;
+			function onServer3result(result)
+			{
+				//S3=result.value;
+				sum = S1+S2;
+				AVG=Math.ceil(sum/numbers.length);
+
+				document.getElementById("Server3").innerText = Number(AVG);
+			}
+			
+			function WSResult(result, severName)
+			{
+				if(result.error)
+				{
+					// Pull the error information from the event.result.errorDetail properties
+					var xfaultcode   = result.errorDetail.code;
+					var xfaultstring = result.errorDetail.string;
+					var xfaultsoap   = result.errorDetail.raw;
+					alert(result.errorDetail.string);
+					// Add code to handle specific error codes here
+				}
+				// if there was no error, and the call came from the call() in init()
+				else 
+				{
+					// Show the arithmetic!
+					//var obj=document.all(severName);
+					var obj=document.all(severName);
+					obj.innerText=result.value;
+				}
+			}
+		</script>
+	</HEAD>
+	<BODY onload="init()" bgColor="#ccffcc">
+		<div id="Service" style="BEHAVIOR:url(webservice.htc)">
+			<TABLE id="Table1" height="127" cellSpacing="1" cellPadding="1" width="615" border="1" align="center">
+				<TR>
+					<td colspan="2" align="middle" bgColor="#dcdcdc">請選擇登入主機</td>
+				</TR>
+				<TR>
+					<TD width="300" align="middle" ><FONT face="新細明體">主機</FONT></TD>
+					<TD align="middle" ><FONT face="新細明體">目前人數</FONT></TD>
+				</TR>
+				<TR>
+					<TD width="300"><a href="http://192.168.12.122/B0A2/Login.aspx">主機1</a></TD>
+					<TD><span id="Server1"></span></TD>
+				</TR>
+				<TR>
+					<TD width="300"><a href="http://192.168.12.102/B0A2/Login.aspx">主機2</a></TD>
+					<TD><span id="Server2"></span></TD>
+				</TR>
+				<TR>
+					<TD width="300"><a href="http://192.168.12.132/B0A2/Login.aspx">主機3</a></TD>
+					<TD><span id="Server3"></span></TD>
+				</TR>
+				<tr><td colspan=2 bgColor="#dcdcdc" align="center">請選擇事業部</td><tr>
+				<tr><td colspan=2><a href="httP://192.168.12.122/B0A0/Login.aspx">互盛董事會</a></td></tr>
+				<tr><td colspan=2><a href="httP://192.168.12.102/B0D0/Login.aspx">互盛開發彙總系統入口(僅供財務部使用)</a></td></tr>
+				<tr><td colspan=2><a href="httP://192.168.12.102/B0/Login.aspx">互盛彙總系統入口(僅供財務部使用)</a></td></tr>
+				
+			</TABLE>
+		</div>
+	</BODY>
+</HTML>
