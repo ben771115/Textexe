@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<HTML>
+	<HEAD>
+		<TITLE>請選擇登入主機</TITLE>
+		<META content="Microsoft Visual Studio 7.0" name="GENERATOR">
+		<script language="javascript">
+			
+			var ServerArray=["http://192.168.12.111/A0A2/",
+				 "http://192.168.12.121/A0A2/",
+				 "http://192.168.12.132/A0A2/"]
+			function init()
+			{
+				
+					Service.useService("http://192.168.12.101/A0A2/GetConnections.asmx?WSDL","Server1");
+					Service.useService("http://192.168.12.121/A0A2/GetConnections.asmx?WSDL","Server2");
+					Service.useService("http://192.168.12.132/A0A2/GetConnections.asmx?WSDL","Server3");
+					var Server1ID=Service.Server1.callService(onServer1result,"CurrentConnections");
+					var Server2ID=Service.Server2.callService(onServer2result,"CurrentConnections");
+					var Server3ID=Service.Server3.callService(onServer3result,"CurrentConnections");
+			}
+			
+			function onServer1result(result)
+			{
+				WSResult(result,"Server1");
+				
+			}
+			
+			function onServer2result(result)
+			{
+				WSResult(result,"Server2");
+				
+			}
+			
+			function onServer3result(result)
+			{
+				WSResult(result,"Server3");
+			}
+			
+			
+			function WSResult(result, severName)
+			{
+				if(result.error)
+				{
+					// Pull the error information from the event.result.errorDetail properties
+					var xfaultcode   = result.errorDetail.code;
+					var xfaultstring = result.errorDetail.string;
+					var xfaultsoap   = result.errorDetail.raw;
+					alert(result.errorDetail.string);
+					// Add code to handle specific error codes here
+				}
+				// if there was no error, and the call came from the call() in init()
+				else 
+				{
+					// Show the arithmetic!
+					var obj=document.all(severName);
+					obj.innerText=result.value;
+				}
+			}
+		</script>
+	</HEAD>
+	<BODY onload="init()" bgColor="#ccffcc">
+		<div id="Service" style="BEHAVIOR:url(webservice.htc)">
+			<TABLE id="Table1" height="127" cellSpacing="1" cellPadding="1" width="615" border="1" align="center">
+				<TR>
+					<td colspan="2" align="middle" >請選擇登入主機</td>
+				</TR>
+				<TR>
+					<TD width="300" align="middle" ><FONT face="新細明體">主機</FONT></TD>
+					<TD align="middle" ><FONT face="新細明體">目前人數</FONT></TD>
+				</TR>
+				<TR>
+					<TD width="300"><a href="http://192.168.12.101/A0A2/Login.aspx">主機1</a></TD>
+					<TD><span id="Server1"></span></TD>
+				</TR>
+				<TR>
+					<TD width="300"><a href="http://192.168.12.121/A0A2/Login.aspx">主機2</a></TD>
+					<TD><span id="Server2"></span></TD>
+				</TR>
+				<TR>
+					<TD width="300"><a href="http://192.168.12.132/A0A2/Login.aspx">主機3</a></TD>
+					<TD><span id="Server3"></span></TD>
+				</TR>
+			</TABLE>
+		</div>
+	</BODY>
+</HTML>
